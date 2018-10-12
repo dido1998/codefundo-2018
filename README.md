@@ -17,7 +17,7 @@ This shows that most of the data is available online, we just have to organise i
 Our solution is aimed at smartly organising data from online sources to make most use of it.
 
 Our idea will be divided into the following parts-
-- Our app will be for two sets of users- NGOs running relief operations and people stuck in flood 
+- Our app will be for two sets of users- NGOs running relief operations and people stuck in flood. 
 - Extracting real-time maps of roads from an online API.
 - Comparing pre-flood and post-flood images to detect flooded road by creating a road-segmentation network.
 - NGOs will have access to the coordinates and the situation of people stuck in distress which will be extracted from twitter using the location API and sentiment analysis techniques. 
