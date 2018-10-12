@@ -4,7 +4,7 @@ The official repo of team flow.
 We will focus on floods currently, we may add support for other disasters-
 
 ## Problems
-We think that there is lack of coherency in fighting floods and running relief operations. We want to solve this problem by providing a communication interface between the NGOs (or government) and the general public. We want to help run more organised relief operations. Recently we were hit by the Kerela floods and one thing we observed that people were posting about their situation on twitter but a lot of their pleas were going un-noticed. For example here are a couple of examples of tweets that most likely went un-noticed or were noticed to late-
+We think that there is lack of coherency in fighting floods and running relief operations. We want to solve this problem by providing a communication interface between the NGOs (or government) and the general public. We want to help run more organised relief operations. Recently we were hit by the Kerela floods and one thing we observed that people were posting about their situation on twitter but a lot of their pleas were going un-noticed. For example here are a couple of examples of tweets that most likely went un-noticed or were noticed too late-
 ```
 - Respected Defence Minister, please check Malayalam news about Chengannur MLA's (Saji Cheriyan) plea for exclusive army and airlift support. He fears a huge death toll if help is not provided soon. Pls provide max help. @DefenceMinIndia @nsitharaman @adgpi #OpMadad #KeralaFloods
 
