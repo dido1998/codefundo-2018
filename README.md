@@ -21,8 +21,8 @@ Our idea will be divided into the following parts-
 - Extracting real-time maps of roads from an online API.
 - Comparing pre-flood and post-flood images to detect flooded road by creating a road-segmentation network.
 - NGOs will have access to the coordinates of the people stuck in distress which will be extracted from twitter using the twitter API.
+- The location of the people will be used in formulating smart and effecient relief routes. The NGO may or may not choose to follow the suggested route.
 - Sentiment Analysis of tweets will also be performed to gauge the severity of the disaster, and to analyse the general state of the people that are affected by the disaster.
 - The people stuck in floods can get updates about relief operations and send distress calls which include their location and situation.
-- The location of the people will be used in formulating smart and effecient relief routes.
 
 We plan to implement a chatbot interface to make the app more user friendly. People will also be able to communicate with the app using speech to text. We will also add an urgent distress button to signify the need for urgent help.
