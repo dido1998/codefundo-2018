@@ -1,101 +1,88 @@
 from scipy.cluster.hierarchy import fclusterdata
 import numpy as np
 from sklearn.cluster import KMeans
-def assignpeople(ngos,people):
-	data=ngos+people
-	state=None
-	datanp=np.zeros((len(data),2))
-	for k,i in enumerate(data):
-		datanp[k,0]=i[1]
-		datanp[k,1]=i[2]
+import FlaskApp.app as app
+from math import radians, cos, sin, asin, sqrt
+def haversine(lon1, lat1, lon2, lat2):
+    """
+    Calculate the great circle distance between two points 
+    on the earth (specified in decimal degrees)
+    """
+    # convert decimal degrees to radians 
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+    # haversine formula 
+    dlon = lon2 - lon1 
+    dlat = lat2 - lat1 
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2 * asin(sqrt(a)) 
+    # Radius of earth in kilometers is 6371
+    km = 6371* c
+    return km
 
-	cluster=fclusterdata(datanp,1)
-	print(cluster)
-	cnt=0
-	for k in range(len(ngos)):
-		ngos[k].append(cluster[cnt])
-		ngos[k].append(1)
-		cnt+=1
-	for k in range(len(people)):
-		people[k].append(cluster[cnt])
-		people[k].append(0)
-		cnt+=1
-	data=people+ngos
-	data.sort(key = lambda x: x[3])
+
+def assignpeople(people,ngos):
+	cntngo=len(ngos)
+	d=np.zeros((len(people),2))
+	for i,p in enumerate(people):
+		d[i,0]=p[1]
+		d[i,1]=p[2]
+	clustersmall=KMeans(n_clusters=cntngo, random_state=0).fit(d)
+	for i,p in enumerate(people):
+		p.append(clustersmall[i])
+	people.sort(lambda x:x[5])
+	taken={}
+	curr=people[0][5]
 	i=0
-	curr=data[0][3]
-	while i<len(data):
-		currdata=[]
-		j=i
-		while data[i][3]==curr:
-			currdata.append(data[i])
+	while i<len(people):
+		temp=[]
+		while people[i][5]==curr:
+			temp.append(people[i])
 			i+=1
-		curr=data[i][3]
-		isone=False
-		cntngo=0
-		cntppl=0
-		iszero=False
-		for c in currdata:
-			if c[4]==1:
-				isone=True
-				cntngo+=1
-			elif c[4]==0:
-				iszero=True
-				cntppl+=1
-		if isone and iszero:
-			d=np.zeros((len(currdata),2))
-			for u,f in enumerate(currdata):
-				d[u,0]=f[1]
-				d[u,1]=f[2]
-			clustersmall=KMeans(n_clusters=cntngo, random_state=0).fit(d)
-			lblcnt=0
-			tmplblcnt=0
-			taken={}
-			for t in range(cntppl):
-				currdata[t].append(clustersmall.labels_[lblcnt])
-				lblcnt+=1
-			prev=-1
-			tmplblcnt=lblcnt
-			for t in range(cntngo):
-				if clustersmall.labels_[lblcnt] not in taken:
-					currdata[lblcnt].append(clustersmall.labels_[lblcnt])
-					taken[clustersmall.labels_[lblcnt]]=1
-				lblcnt+=1
-			for t in range(tmplblcnt, tmplblcnt+cntngo):
-				if len(currdata[t])==5:
-					for ss in range(cntngo):
-						if ss not in taken:
-							taken[ss]=1
-							currdata[t].append(ss)
-							break
-			for x,c in enumerate(currdata):
-				if c[4]==0:
-					for x1,c1 in enumerate(currdata):
-						if x1==x:
-							continue
-						elif c1[4]==1 and c1[5]==c[5]:
-							currdata[x].append(c1[0])
-							break
-				elif c[4]==1:
-					reslat=0
-					leslat=0
-					for x1,c1 in enumerate(currdata):
-						elif c1[4]==0 and c1[5]==c[5]:
-							reslat+=c1[1]/3
-							reslon+=c1[2]/3
-					currdata[x].append(reslat)
-					currdata[x].append(reslon)			
+		curr=people[i][5]
+		curlat=0
+		curlng=0
+		for t in temp:
+			curlat+=t[1]/3
+			curlng+=t[2]/3
+		min=0
+		mindist=1000000
+		for j,n in enumerate(ngo):
+			if j in taken:
+				continue
+			else:
+				dist=haversine(n[6],n[5],curlng,curlat)
+				if dist<mindist:
+					mindist=dist
+					min=j
+		for p in people:
+			app.insertngocurr(ngo[min][0],p[1],p[2],p[0])
+			app.insertrescuengo(p[0],ngo[min][0])
 
-			restorecnt=0
-			while j<i:
-				data[j]=currdata[restorecnt]
-				j+=1
-				restorecnt+=1
-		elif iszero and not isone:
-			temp=i
-			obtained=False
-			while temp<	
-		print(data)
 
+def precluster(people,ngo):
+	for p in people:
+		p.append(1)
+	for n in ngo:
+		n.append(0)
+	data=people+ngo
+	newngo=[]
+	datanp=np.zeros((len(data),2))
+	for i,d in enumerate(data):
+		if len(d)==5:
+			datanp[i,0]=d[1]
+			datanp[i,1]=d[2]
+		else:
+			datanp[i,0]=d[5]
+			datanp[i,1]=d[6]
+	cluster=fclusterdata(datanp,1)
+	initcnt=len(people)
+	for w,n in enumerate(ngo):
+		cnt=0
+		for e,p in enumerate(people):
+			if cluster[e]==cluster[initcnt+w]:
+				cnt+=1
+		if cnt>0:
+			newngo.append(n)
+	cluster(people,newngo)
 if __name__=='__main__':
 	assignpeople()

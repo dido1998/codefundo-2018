@@ -35,7 +35,7 @@ def analysetweet(tweet):
 	print('-------------------')
 	if pred=='DetectFlood':
 
-		db.insertintotable(tweet)
+		db.insertuser(tweet)
 		tweetextract.gettweetbylocation(tweet)
 
 if __name__=='__main__':
