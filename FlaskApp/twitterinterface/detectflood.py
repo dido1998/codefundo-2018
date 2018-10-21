@@ -21,11 +21,12 @@ def check(text):
 	try:
 	    r = requests.get('https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/457e361c-3942-4caf-89f9-ce28f0c1ee57',headers=headers, params=params)
 	    data=r.json()
-
+	    return data['topScoringIntent']['intent']
 	except Exception as e:
-	    print("[Errno {0}] {1}".format(e.errno, e.strerror))
+	    print("error")
+	    return None
 
-	return data['topScoringIntent']['intent']
+	
 
 def analysetweet(tweet):
 
