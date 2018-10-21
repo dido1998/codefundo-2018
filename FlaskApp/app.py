@@ -56,7 +56,7 @@ def signUp():
             print(_hashed_password)
             #cursor.callproc('sp_createUser',(_name,_email,_password))
             #data = cursor.fetchall()
-            insertngo()
+            insertngo(name,email,password)
 
             if len(data) is 0:
                 print('finally')
@@ -76,26 +76,28 @@ def signUp():
         conn.close()
 #aniket
 def create():
-	cursor.execute('create table user (id autoincrement,lat numeric,lon numeric,resuceid varchar(20))')
-	cursor.execute('create table ngo (id int autoincrement,email varchar(20),name varchar(20),password varchar(20),lat numeric,lon numeric)')
+	cursor.execute('create table user (id auto increment,lat numeric,lon numeric,resuceid varchar(20))')
+	cursor.execute('create table ngo (id int auto increment,email varchar(20),name varchar(20),password varchar(20),lat numeric,lon numeric)')
     cursor.execute('create table ngocurr(id int, rescuelat number,rescuelon number)')
 
-def insertngo(idstr,lat,lon):
-	cursor.execute('insert into ngo(idstr,lat,lon) values('+(idstr+','+lat+','+lon)+')')
+def insertngo(name,email,password,lat,lng):
+	cursor.execute('insert into ngo(email,name,password,lat,lon) values('+(email+','+name+','+password+','+lat+','+lon)+')')
 def insertuser(idstr,lat,lon):
-	cursor.execute('insert into user(idstr,lat,lon) values('+(idstr+','+lat+','+lon)+')')
-
-def insertrescueuser(idstr,rescuelon,resucelat):
-	cursor.execute('insert into ngo(rescuelat,rescuelon) values('+resucelat+','+rescuelon+') where idstr='+idstr)
+	cursor.execute('insert into user(lat,lon) values('+lat+','+lon+')')
+def insertngocurr(ids,rescuelat,rescuelon):
+    cursor.execute('insert into user(id,lat,lon) values('+ids+','+lat+','+lon+')')
 
 
 def insertrescuengo(idstr,resuceid):
 	cursor.execute('insert into user (rescueid) values ('+rescueid+') where idstr='+idstr)
 def delentryuser(idstr):
-	cursor.execute('delete from user where idstr='+idstr)
+	cursor.execute('delete from user where id='+idstr)
 def deleteentryngo(idstr):
-	cursor.execute('delete from ngo where idstr='+idstr)
+	cursor.execute('delete from ngo where id='+idstr)
 #aniket
 
 if __name__ == "__main__":
     app.run()
+#https://maps.googleapis.com/maps/api/geocode/json?' +
+#                  'latlng=' + latitude + ',' + longitude + '&key=' + 
+#                  'AIzaSyA2Fn0J57CMn5od7EHQQWlOoEAGxKK8kqo'
