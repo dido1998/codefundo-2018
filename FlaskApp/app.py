@@ -54,8 +54,9 @@ def signUp():
 
             _hashed_password = generate_password_hash(_password)
             print(_hashed_password)
-            cursor.callproc('sp_createUser',(_name,_email,_password))
-            data = cursor.fetchall()
+            #cursor.callproc('sp_createUser',(_name,_email,_password))
+            #data = cursor.fetchall()
+            insertngo()
 
             if len(data) is 0:
                 print('finally')
@@ -73,7 +74,28 @@ def signUp():
     finally:
         cursor.close() 
         conn.close()
+#aniket
+def create():
+	cursor.execute('create table user (id autoincrement,lat numeric,lon numeric,resuceid varchar(20))')
+	cursor.execute('create table ngo (id int autoincrement,email varchar(20),name varchar(20),password varchar(20),lat numeric,lon numeric)')
+    cursor.execute('create table ngocurr(id int, rescuelat number,rescuelon number)')
 
+def insertngo(idstr,lat,lon):
+	cursor.execute('insert into ngo(idstr,lat,lon) values('+(idstr+','+lat+','+lon)+')')
+def insertuser(idstr,lat,lon):
+	cursor.execute('insert into user(idstr,lat,lon) values('+(idstr+','+lat+','+lon)+')')
+
+def insertrescueuser(idstr,rescuelon,resucelat):
+	cursor.execute('insert into ngo(rescuelat,rescuelon) values('+resucelat+','+rescuelon+') where idstr='+idstr)
+
+
+def insertrescuengo(idstr,resuceid):
+	cursor.execute('insert into user (rescueid) values ('+rescueid+') where idstr='+idstr)
+def delentryuser(idstr):
+	cursor.execute('delete from user where idstr='+idstr)
+def deleteentryngo(idstr):
+	cursor.execute('delete from ngo where idstr='+idstr)
+#aniket
 
 if __name__ == "__main__":
     app.run()

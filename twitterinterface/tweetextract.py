@@ -7,7 +7,8 @@ from tweepy import OAuthHandler
 from tweepy import Stream
 import json
 import detectflood
-import flooddatabase
+import FlaskApp.app as db
+
 #Variables that contains the user credentials to access Twitter API 
 access_token = ""
 access_token_secret = ""
@@ -47,7 +48,7 @@ def gettweetbylocation(tweet):
     tweets = api.search(q='geocode:'+tweet['coordinates']['coordinates'][0]+','+tweet['coordinates']['coordinates'][1]+',50km')
     for t in tweets:
         if detectflood.check(t['text'])=='DetectFlood':
-            flooddatabase.insertintotable(t)
+            db.insertintotable(t)
 
 
 if __name__=='__main__':

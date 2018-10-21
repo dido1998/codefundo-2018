@@ -1,7 +1,7 @@
 ########### Python 3.6 #############
 import requests
 import tweetextract
-import flooddatabase
+import FlaskApp.app as db
 def check(text):
 	headers = {
 	    # Request headers
@@ -35,7 +35,7 @@ def analysetweet(tweet):
 	print('-------------------')
 	if pred=='DetectFlood':
 
-		flooddatabase.insertintotable(tweet)
+		db.insertintotable(tweet)
 		tweetextract.gettweetbylocation(tweet)
 
 if __name__=='__main__':
