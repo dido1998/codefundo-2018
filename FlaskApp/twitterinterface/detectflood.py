@@ -1,11 +1,11 @@
 ########### Python 3.6 #############
 import requests
-import tweetextract
-import FlaskApp.app as db
+import twitterinterface.tweetextract
+import app as db
 def check(text):
 	headers = {
 	    # Request headers
-	    'Ocp-Apim-Subscription-Key': '',
+	    'Ocp-Apim-Subscription-Key': '793c58a6a4d54c469c527b9e47516371',
 	}
 
 	params ={
@@ -19,7 +19,7 @@ def check(text):
 	}
 
 	try:
-	    r = requests.get('https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/<enter key>',headers=headers, params=params)
+	    r = requests.get('https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/457e361c-3942-4caf-89f9-ce28f0c1ee57',headers=headers, params=params)
 	    data=r.json()
 
 	except Exception as e:

@@ -3,7 +3,7 @@ from flaskext.mysql import MySQL
 from werkzeug import generate_password_hash, check_password_hash
 import json
 import urllib.request
-
+from twitterinterface import tweetextract
 app = Flask(__name__)
 mysql = MySQL()
  
@@ -19,6 +19,7 @@ mysql.init_app(app)
 
 
 def main():
+    #tweetextract.gettweetbytag()
     return render_template('index.html')
 
 @app.route('/checkStatus')
@@ -36,7 +37,16 @@ def Authenticate():
     else:
      return "Logged in successfully"
 
-
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        if request.form['username'] != 'admin' or request.form['password'] != 'admin':
+            error = 'Invalid Credentials. Please try again.'
+        else:
+            return redirect(url_for('home'))
+    return render_template('login.html', error=error)
+    
 @app.route('/signUp',methods=['POST'])
 def signUp():
     try:
@@ -62,7 +72,7 @@ def signUp():
             cursor = conn.cursor()
 
             #cursor.execute('insert into ngo(email,name,pass,lat,lon) values('+(_email+','+_name+','+_password+','+lat+','+lon)+')')
-            cursor.execute("INSERT INTO ngo (email,name,pass,lat,lon) VALUES(%s,%s,%s,%d,%d)",(_email,_name,_password,lat,lon))
+            cursor.execute("INSERT INTO ngo (email,name,pass,lat,lon) VALUES(%s,%s,%s,%s,%s)",(_email,_name,_password,str(lat),str(lon)))
             print('coolllllll')
             #cursor.callproc('sp_createUser',(_name,_email,_password))
             data = cursor.fetchall()
@@ -94,20 +104,21 @@ def create():
     cursor.execute('create table ngocurr(id int, rescuelat number,rescuelon number,rescueid int)')
 
 def insertngo(name,email,password,lat,lng):
-    cursor.execute('insert into ngo(email,name,password,lat,lon) values('+(email+','+name+','+password+','+lat+','+lon)+')')
+    cursor.execute("INSERT INTO ngo (email,name,pass,lat,lon) VALUES(%s,%s,%s,%s,%s)",(_email,_name,_password,str(lat),str(lon)))
 
 def insertuser(idstr,lat,lon):
-    cursor.execute('insert into user(lat,lon) values('+lat+','+lon+')')
+    cursor.execute("INSERT INTO user (lat,lon) VALUES(%s,%s)",(str(lat),str(lon)))
+    
 
-def insertngocurr(ids,rescuelat,rescuelon):
-    cursor.execute('insert into ngocurr(id,lat,lon) values('+ids+','+lat+','+lon+')')
-
+def insertngocurr(ids,rescuelat,rescuelon,rescueid):
+    cursor.execute("INSERT INTO ngo_saver (id, rescue_lat, rescue_lon, rescue_id) VALUES(%s,%s,%s,%s)",(str(ids),str(rescuelat),str(rescuelon),str(rescue_id)))
+    
 def insertrescuengo(idstr,resuceid):
-    cursor.execute('insert into user (rescueid) values ('+rescueid+') where id='+idstr)
+    cursor.execute("UPDATE user set rescue_id = %d where id = %d",(rescueid,idstr))
 
 def delentryuser(idstr):
     cursor.execute('delete from user where id='+idstr)
-    cursor.execute('delete from ngocurr where rescueid='+idstr)
+    cursor.execute('delete from ngo_saver where rescueid='+idstr)
     #####
     """
     make ngo go after next relevent user
@@ -118,9 +129,9 @@ def deleteentryngo(idstr):
     cursor.execute('delete from ngo where id='+idstr)
 
 def updatelocngo(idstr,newlat,newlong):
-    cursor.execute('update ngo set lat='+newlat+' where id='+idstr)
-    cursor.execute('update ngo set lon='+newlong+' where id='+idstr)
-    cursor.execute('select * from ngocurr where id='+idstr)
+    cursor.execute('update ngo set lat=%s where id=%d'+(newlat,idstr))
+    cursor.execute('update ngo set lon=%s where id=%d'+(newlong,idstr))
+    cursor.execute('select * from ngo_save where id='+idstr)
     people=cursor.fetchall()
     for p in people:
         dist=haversine(p[2],p[1],newlong,newlat)

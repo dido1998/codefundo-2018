@@ -6,14 +6,14 @@ from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
 import json
-import detectflood
-import FlaskApp.app as db
+import twitterinterface.detectflood as detectflood
+import app as db
 
 #Variables that contains the user credentials to access Twitter API 
-access_token = ""
-access_token_secret = ""
-consumer_key = ""
-consumer_secret = ""
+access_token = "813274164492529665-wPAJPScMbuU8oOKlvoHO3m4kK14pL0z"
+access_token_secret = "jMD3lboNidIti6RoygcLH32OrTem2uddgWKE8ZuHY0AMv"
+consumer_key = "dvgZ3nJuemHAV7gY7v2IPpPEZ"
+consumer_secret = "LL8E0WYTg8iKh12IKbCAeQ63xyZsi48GXDq9GLb7AoaCAgxGpb"
 import tweepy
 
 #This is a basic listener that just prints received tweets to stdout.
