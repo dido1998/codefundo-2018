@@ -1,7 +1,7 @@
 from flask import Flask, render_template, json, request
 from flaskext.mysql import MySQL
 from werkzeug import generate_password_hash, check_password_hash
-
+import twitterinterface.geocoding as gd
 
 app = Flask(__name__)
 mysql = MySQL()
@@ -43,7 +43,7 @@ def signUp():
         _name = request.form['orangeForm-name']
         _email = request.form['orangeForm-email']
         _password = request.form['orangeForm-pass']
-
+        ##add adress code here and store in variable _address
         print(_name)
         print(_email)
         print(_password)
@@ -53,10 +53,12 @@ def signUp():
             cursor = conn.cursor()
 
             _hashed_password = generate_password_hash(_password)
+
             print(_hashed_password)
             #cursor.callproc('sp_createUser',(_name,_email,_password))
             #data = cursor.fetchall()
-            insertngo(name,email,password)
+            lat,lng=gd.geocode(_address)
+            insertngo(_name,_email,_password,lat,lng)
 
             if len(data) is 0:
                 print('finally')
