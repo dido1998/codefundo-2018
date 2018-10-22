@@ -7,8 +7,7 @@ from tweepy import OAuthHandler
 from tweepy import Stream
 import json
 import twitterinterface.detectflood as detectflood
-import app as db
-
+import database as db
 #Variables that contains the user credentials to access Twitter API 
 access_token = "813274164492529665-wPAJPScMbuU8oOKlvoHO3m4kK14pL0z"
 access_token_secret = "jMD3lboNidIti6RoygcLH32OrTem2uddgWKE8ZuHY0AMv"
@@ -18,14 +17,21 @@ import tweepy
 
 #This is a basic listener that just prints received tweets to stdout.
 class StdOutListener(StreamListener):
-
+    def __init__(self,t):
+        self.c1=0
+        self.c=t
     def on_data(self, data):
         jsondata=json.loads(data)
-        
+        self.c1+=1
+
         with open('data.json', 'w+') as outfile:
             detectflood.analysetweet(jsondata)
             json.dump(data, outfile)
-        return True
+        if self.c1<self.c:
+            return True
+        else:
+            print("streaming stopped")
+            return False
 
     def on_error(self, status):
         print (status)
@@ -33,7 +39,8 @@ class StdOutListener(StreamListener):
 
 def gettweetbytag():
     #This handles Twitter authetification and the connection to Twitter Streaming API
-    l = StdOutListener()
+
+    l = StdOutListener(30)
     auth = OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
     stream = Stream(auth, l)
