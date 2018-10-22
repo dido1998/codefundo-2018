@@ -1,0 +1,3 @@
+ celery worker -A appC.celery --loglevel=INFO
+celery beat -A appC.celery --schedule=/tmp/celerybeat-schedule --loglevel=INFO --pidfile=/tmp/celerybeat.pid
+

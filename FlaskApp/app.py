@@ -2,7 +2,10 @@ from flask import Flask, render_template, json, request, redirect, url_for, flas
 from flaskext.mysql import MySQL
 import json
 import urllib.request
-from twitterinterface import tweetextract,geocoding
+from os import environ
+from celery import Celery
+from appC.tasks import test 
+
 app = Flask(__name__)
 mysql = MySQL()
 
@@ -10,6 +13,36 @@ app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'amit'
 app.config['MYSQL_DATABASE_DB'] = 'BucketList'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+
+# Configs
+REDIS_HOST = "0.0.0.0"
+REDIS_PORT = 6379
+BROKER_URL = environ.get('REDIS_URL', "redis://{host}:{port}/0".format(
+    host=REDIS_HOST, port=str(REDIS_PORT)))
+CELERY_RESULT_BACKEND = BROKER_URL
+
+
+def make_celery(app):
+    # create context tasks in celery
+    celery = Celery(
+        app.import_name,
+        broker=BROKER_URL
+    )
+    TaskBase = celery.Task
+
+    class ContextTask(TaskBase):
+        abstract = True
+
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return TaskBase.__call__(self, *args, **kwargs)
+
+    celery.Task = ContextTask
+
+    return celery
+
+celery = make_celery(app)
+
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 mysql.init_app(app)
 
@@ -19,7 +52,8 @@ cursor= conn.cursor()
 
 @app.route("/")
 def index():
-    tweetextract.gettweetbytag()
+    task = test.print_hello.delay()
+    #task.wait()
     return render_template('index.html')
 
 @app.route('/checkStatus')
