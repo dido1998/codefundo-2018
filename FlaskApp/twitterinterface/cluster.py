@@ -55,7 +55,7 @@ def assignpeople(people,ngos):
 					mindist=dist
 					min=j
 		for p in people:
-			app.insertngocurr(ngo[min][0],p[1],p[2],p[0])
+			app.insertngocurr(ngo[min][0],str(p[1]),str(p[2]),p[0])
 			app.insertrescuengo(p[0],ngo[min][0])
 
 

@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
 <head>
-
+    <style>
+      #map {
+        width: 100%;
+        height: 400px;
+        background-color: grey;
+      }
+    </style>
     <!--- basic page needs
     ================================================== -->
     <meta charset="utf-8">
@@ -13,21 +19,30 @@
     ================================================== -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="/static/css/mdb.min.css" rel="stylesheet">
+    <!-- Your custom styles (optional) -->
+    <link href="/static/css/style.css" rel="stylesheet">
+
     <!-- CSS
     ================================================== -->
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/vendor.css">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/vendor.css">
+    <link rel="stylesheet" href="/static/css/main.css">
 
     <!-- script
     ================================================== -->
-    <script src="js/modernizr.js"></script>
-    <script src="js/pace.min.js"></script>
+    <script src="/static/js/modernizr.js"></script>
+    <script src="/static/js/pace.min.js"></script>
 
     <!-- favicons
     ================================================== -->
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
 
 </head>
 
@@ -50,14 +65,12 @@
 
         <nav class="row header-nav-wrap wide">
             <ul class="header-main-nav">
-                <li><a href="index.html" title="intro">Home</a></li>
-                <li class="current"><a href="blog.html" title="blog">Blog</a></li>	
+                <li><a href="/" title="intro">Home</a></li>
+                
             </ul>
 
             <ul class="header-social">
-                <li><a href="#0"><i class="fab fa-facebook-f" aria-hidden="true"></i></a></li>
-                <li><a href="#0"><i class="fab fa-twitter" aria-hidden="true"></i></a></li>
-                <li><a href="#0"><i class="fab fa-instagram" aria-hidden="true"></i></a></li>
+                <li><button class="btn aqua-gradient" onclick="location.href ='logout';">Logout</button></li>
             </ul>
         </nav>
 
@@ -73,9 +86,9 @@
         <div class="row page-header__content narrower text-center">
             <div class="col-full">
 
-                <h3 class="subhead">Our Blog.</h3>
+                <h3 class="subhead">Welcome {{ session_user_name }}</h3>
                 <h1 class="display-1">
-                    Thoughts, Ideas, Insights and Other Stuff.
+                    Current Status -
                 </h1>
 
                 <a href="#0" class="page-header__search-trigger">
@@ -103,6 +116,25 @@
     <!-- blog content wrap
     ================================================== -->
     <section class="blog-content-wrap">
+
+    <h3>Flooded Locations</h3>
+    <!--The div element for the map -->
+    <div id="map"></div>
+    <script>
+        // Initialize and add the map
+        function initMap() {
+          // The location of Uluru
+          var uluru = {lat: -25.344, lng: 131.036};
+          // The map, centered at Uluru
+          var map = new google.maps.Map(
+              document.getElementById('map'), {zoom: 4, center: uluru});
+          // The marker, positioned at Uluru
+          var marker = new google.maps.Marker({position: uluru, map: map});
+        }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2Fn0J57CMn5od7EHQQWlOoEAGxKK8kqo&callback=initMap">
+    </script>
 
         <div class="row entries-wrap add-top-padding">
             <div class="entries">
@@ -561,8 +593,13 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 
     <!-- Java Script
     ================================================== -->
-    <script src="js/jquery-3.2.1.min.js"></script>
-    <script src="js/plugins.js"></script>
-    <script src="js/main.js"></script>
-
+    <script src="/static/js/jquery-3.2.1.min.js"></script>
+    <script src="/static/js/plugins.js"></script>
+    <script src="/static/js/main.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="/static/js/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="/static/js/mdb.min.js"></script>
 </body>

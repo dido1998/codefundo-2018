@@ -23,7 +23,7 @@ def check(text):
 	    data=r.json()
 	    return data['topScoringIntent']['intent']
 	except Exception as e:
-	    print("error")
+	    print("error in detect flood")
 	    return None
 
 	
