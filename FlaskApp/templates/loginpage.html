@@ -2,11 +2,17 @@
 <html class="no-js" lang="en">
 <head>
     <style>
-      #map {
+/*      #map {
         width: 100%;
         height: 400px;
         background-color: grey;
-      }
+      }*/
+    #map-canvas {
+    height: 600px;
+    width: 100%;
+    margin: 0px;
+    padding: 0px
+}
     </style>
     <!--- basic page needs
     ================================================== -->
@@ -46,7 +52,7 @@
 
 </head>
 
-<body id="top">
+<body id="top" onload="checkCookie()>
 
     <div id="preloader">
         <div id="loader"></div>
@@ -115,30 +121,116 @@
 
     <h3>Flooded Locations</h3>
     <!--The div element for the map -->
-    <div id="map"></div>
+    <!-- <div id="map"></div>
+     -->
+      
+    
+    <input type="button" id="routebtn" value="route" />
+    <div id="map-canvas"></div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2Fn0J57CMn5od7EHQQWlOoEAGxKK8kqo"></script>
     <script>
         
         // Initialize and add the map
-        function initMap() {
+        // function initMap() {
+        //     var location_user_lat='{{geocode_user[0]}}'
+        //     var location_user_lon='{{geocode_user[1]}}'
+        //     var location_ngo_lat='{{geocode_ngo[0]}}'
+        //     var location_ngo_lon='{{geocode_ngo[1]}}'
+        //     console.log(location_user_lon)
+        //     console.log(location_user_lat)
+        //   // The location of Uluru
+        //   var uluru = {lat: Number(location_user_lat), lng: Number(location_user_lon)};
+        //   // The map, centered at Uluru
+        //   var uluru1 = {lat: Number(location_ngo_lat), lng: Number(location_ngo_lon)};
+
+        //   var map = new google.maps.Map(
+        //       document.getElementById('map'), {zoom: 4, center: uluru});
+        //   // The marker, positioned at Uluru
+        //   var marker1= new google.maps.Marker({position: uluru, map: map});
+        //   var marker2= new google.maps.Marker({position: uluru1, map: map});
+
+        // }
+
+        function setCookie(cname,cvalue,exdays) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exdays*24*60*60*1000));
+            var expires = "expires=" + d.toGMTString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function checkCookie() {
+            var user=getCookie("username");
+            if (user != "") {
+                alert("Welcome again " + user);
+            } else {
+               user = prompt("Please enter your name:","");
+               if (user != "" && user != null) {
+                   setCookie("username", user, 30);
+               }
+            }
+        }
+        function mapLocation() {
             var location_user_lat='{{geocode_user[0]}}'
             var location_user_lon='{{geocode_user[1]}}'
             var location_ngo_lat='{{geocode_ngo[0]}}'
             var location_ngo_lon='{{geocode_ngo[1]}}'
-            console.log(location_user_lon)
-            console.log(location_user_lat)
-          // The location of Uluru
-          var uluru = {lat: Number(location_user_lat), lng: Number(location_user_lon)};
-          // The map, centered at Uluru
-          var map = new google.maps.Map(
-              document.getElementById('map'), {zoom: 4, center: uluru});
-          // The marker, positioned at Uluru
-          var marker = new google.maps.Marker({position: uluru, map: map});
-        }
-    </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2Fn0J57CMn5od7EHQQWlOoEAGxKK8kqo&callback=initMap">
-    </script>
+          var directionsDisplay;
+          var directionsService = new google.maps.DirectionsService();
+          var map;
 
+          function initialize() {
+            
+            directionsDisplay = new google.maps.DirectionsRenderer();
+            var chicago = new google.maps.LatLng(Number(location_ngo_lat), Number(location_ngo_lat));
+            var mapOptions = {
+              zoom: 7,
+              center: chicago
+            };
+            map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+            directionsDisplay.setMap(map);
+            google.maps.event.addDomListener(document.getElementById('routebtn'), 'click', calcRoute);
+          }
+
+          function calcRoute() {
+            var start = new google.maps.LatLng(Number(location_ngo_lat), Number(location_ngo_lat));
+            var end = new google.maps.LatLng(Number(location_user_lat), Number(location_user_lon));
+            var request = {
+              origin: start,
+              destination: end,
+              travelMode: google.maps.TravelMode.DRIVING
+            };
+            directionsService.route(request, function(response, status) {
+              if (status == google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setDirections(response);
+                directionsDisplay.setMap(map);
+              } else {
+                alert("Directions Request from " + start.toUrlValue(6) + " to " + end.toUrlValue(6) + " failed: " + status);
+              }
+            });
+          }
+
+          google.maps.event.addDomListener(window, 'load', initialize);
+    }
+mapLocation();
+    </script>
+ 
+ 
         <div class="row entries-wrap add-top-padding">
             <div class="entries">
 

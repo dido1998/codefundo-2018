@@ -61,6 +61,22 @@ def index():
 def showSignUp():
     return render_template('status.html')
 
+@app.route('/receiver', methods = ['POST'])
+def worker():
+    # read json + reply
+    # data = request.get_json()
+    # print(data)
+    data = request.form['keyword']
+    print(data)
+    result = ''
+
+    # for item in data:
+    #     # loop over every row
+    #     result += str(item['make']) + '\n'
+    print(result)
+    return result
+
+
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
     if 'username' in session:
@@ -73,7 +89,7 @@ def profile():
         geocode_user=events['lat1'],events['lon1']
         geocode_ngo=events['lat2'],events['lon2']
         username_session = escape(session['username']).capitalize()
-        return render_template('loginpage.html', session_user_name=username_session,geocode_ngo=geocode_ngo,geocode_user=geocode_user)
+        return render_template('loginpage.html', session_user_name=username_session,geocode_ngo=geocode_ngo,geocode_user=geocode_user   )
 
     return redirect(url_for('index'))
     #return render_template('loginpage.html')

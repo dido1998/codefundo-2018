@@ -39,9 +39,10 @@ def insertngo(name,email,password,lat,lng):
     global cursor
     cursor.execute("INSERT INTO ngo (email,name,pass,lat,lon) VALUES(%s,%s,%s,%s,%s)",(_email,_name,_password,str(lat),str(lon)))
 
-def insertuser(idstr,lat,lon):
-    cursor.execute("INSERT INTO user (lat,lon) VALUES(%s,%s)",(str(lat),str(lon)))
-    
+def insertuser(lat,lon):
+	global cursor    
+	cursor.execute("INSERT INTO user (lat,lon) VALUES(%s,%s)",(str(lat),str(lon)))
+	checkusertable()
 
 def insertngocurr(ids,rescuelat,rescuelon,rescueid):
     global cursor
@@ -106,7 +107,7 @@ def updatelocngo(idstr,newlat,newlong):
             delentryuser(p[0])
 def checkusertable():
     global cursor
-    cursor.execute('select * from user')
+    cursor.execute('select * from user where rescue_id=NULL')
     data=cursor.fetchall()
     if(len(data)>0):
         newdata=[]

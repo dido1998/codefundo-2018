@@ -40,7 +40,7 @@
 
 </head>
 
-<body id="top">
+<body id="top"  >
 
     <div id="preloader">
         <div id="loader"></div>
@@ -506,6 +506,71 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <script type="text/javascript" src="/static/js/mdb.min.js"></script>
 
     <script type="text/javascript">
+    var user_lat, user_long;
+    var cars = [
+    { "make":"Porsche", "model":"911S" },
+    { "make":"Mercedes-Benz", "model":"220SE" },
+    { "make":"Jaguar","model": "Mark VII" }
+    ];
+
+    function setCookie(cname,cvalue,exdays) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exdays*24*60*60*1000));
+            var expires = "expires=" + d.toGMTString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function checkCookie() {
+            var user=getCookie("username");
+            // coo = [user_lat, user_long]
+            var coo = [{"lat":"12"},
+                    {"lon":"123"}];
+            alert(cars)
+            finalco= String(user_lat) + ',' + String(user_long);
+            $.ajax({
+            type: "POST",
+            cache: false,
+            data:{keyword:finalco},
+            url: './receiver',
+            dataType: "json",
+            success: function(data) { 
+                alert('yoo')
+                console.log(data);                    
+            },
+            error: function(jqXHR) {
+                // alert("error: " + jqXHR.status);
+                // alert(jqXHR)
+                console.log(jqXHR);
+            }
+        })
+            if (user != "") {
+                alert("Welcome again " + user);
+            } else {
+               user = prompt("Please enter your name:","");
+               if (user != "" && user != null) {
+                   setCookie("username", user, 30);
+
+               }
+            }
+             
+        }
+        
         function ipLookUp () {
               $.ajax('http://ip-api.com/json')
               .then(
@@ -542,16 +607,20 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
           navigator.geolocation.getCurrentPosition(
            function success(position) {
              // for when getting location is a success
+             user_lat = position.coords.latitude;
+             user_long = position.coords.longitude;
              console.log('latitude', position.coords.latitude, 
                          'longitude', position.coords.longitude);
              getAddress(position.coords.latitude, 
                         position.coords.longitude)
+             checkCookie();
            },
           function error(error_message) {
             // for when getting location results in an error
             console.error('An error has occured while retrieving' +
                           'location', error_message)
             ipLookUp()
+            
           }
         );
         } else {
