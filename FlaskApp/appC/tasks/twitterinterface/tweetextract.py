@@ -6,8 +6,8 @@ from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
 import json
-import twitterinterface.detectflood as detectflood
-import database as db
+from appC.tasks.twitterinterface import detectflood
+from appC.tasks.twitterinterface import database as db
 #Variables that contains the user credentials to access Twitter API 
 access_token = "813274164492529665-wPAJPScMbuU8oOKlvoHO3m4kK14pL0z"
 access_token_secret = "jMD3lboNidIti6RoygcLH32OrTem2uddgWKE8ZuHY0AMv"

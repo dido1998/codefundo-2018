@@ -1,21 +1,27 @@
 from flaskext.mysql import MySQL
-
+from appC.tasks.twitterinterface import cluster as cl
 
 mysql = MySQL()
 conn=None
 cursor=None
 def init(app):
+	global cursor,conn,mysql
+	print("initialized!!!!")
 	mysql.init_app(app)
 	conn = mysql.connect()
 	cursor= conn.cursor()
+	print(cursor)
 
-
+def commit():
+	global conn
+	conn.commit()
 def create():
     cursor.execute('create table user (id auto increment,lat numeric,lon numeric,resuceid varchar(20))')
     cursor.execute('create table ngo (id int auto increment,email varchar(20),name varchar(20),password varchar(20),lat numeric,lon numeric)')
     cursor.execute('create table ngocurr(id int, rescuelat number,rescuelon number,rescueid int)')
 
 def insertngo(name,email,password,lat,lng):
+    global cursor
     cursor.execute("INSERT INTO ngo (email,name,pass,lat,lon) VALUES(%s,%s,%s,%s,%s)",(_email,_name,_password,str(lat),str(lon)))
 
 def insertuser(idstr,lat,lon):
@@ -23,12 +29,20 @@ def insertuser(idstr,lat,lon):
     
 
 def insertngocurr(ids,rescuelat,rescuelon,rescueid):
-    cursor.execute("INSERT INTO ngo_saver (id, rescue_lat, rescue_lon, rescue_id) VALUES(%s,%s,%s,%s)",(str(ids),str(rescuelat),str(rescuelon),str(rescue_id)))
+    global cursor
+    cursor.execute("SELECT COUNT(1) FROM ngo_saver WHERE rescue_id = {};".format(rescueid))
+    if cursor.fetchone()[0]:
+        return
+    cursor.execute("INSERT INTO ngo_saver (id, rescue_lat, rescue_lon, rescue_id) VALUES(%s,%s,%s,%s)",(str(ids),str(rescuelat),str(rescuelon),str(rescueid)))
     
 def insertrescuengo(idstr,resuceid):
-    cursor.execute("UPDATE user set rescue_id = %d where id = %d",(rescueid,idstr))
+    global cursor
+    print(type(resuceid))
+    print(type(idstr))
+    cursor.execute("UPDATE user set rescue_id = {} where id = {}".format(int(resuceid),int(idstr)))
 
 def delentryuser(idstr):
+    global cursor
     cursor.execute('delete from user where id='+idstr)
     cursor.execute('delete from ngo_saver where rescueid='+idstr)
     #####
@@ -38,9 +52,11 @@ def delentryuser(idstr):
 
     #######
 def deleteentryngo(idstr):
+    global cursor
     cursor.execute('delete from ngo where id='+idstr)
 
 def updatelocngo(idstr,newlat,newlong):
+    global cursor
     cursor.execute('update ngo set lat=%s where id=%d'+(newlat,idstr))
     cursor.execute('update ngo set lon=%s where id=%d'+(newlong,idstr))
     cursor.execute('select * from ngo_save where id='+idstr)
@@ -50,16 +66,22 @@ def updatelocngo(idstr,newlat,newlong):
         if dist<1:
             delentryuser(p[0])
 def checkusertable():
+    global cursor
     cursor.execute('select * from user')
-    data=cursor.fetcall()
+    data=cursor.fetchall()
     if(len(data)>0):
-        for d in data:
-            d[1]=double(d[1])
-            d[2]=double(d[2])
+        newdata=[]
+        for i,d in enumerate(data):
+            newdata.append(list(data[i]))
+            print(type(newdata[i]))
+            newdata[i][1]=float(d[1])
+            newdata[i][2]=float(d[2])
         cursor.execute('select * from ngo')
         datango=cursor.fetchall()
-        for d in datango:
-            d[4]=double(d[4])
-            d[5]=double(d[5])
-        cl.precluster(data,datango)
+        newdatango=[]
+        for i,d in enumerate(datango):
+            newdatango.append(list(datango[i]))
+            newdatango[i][4]=float(d[4])
+            newdatango[i][5]=float(d[5])
+        cl.precluster(newdata,newdatango)
 #aniket

@@ -49,7 +49,7 @@ conn = mysql.connect()
 cursor= conn.cursor()
 
 database.init(app)
-
+database.checkusertable()
 
 @app.route("/")
 def index():

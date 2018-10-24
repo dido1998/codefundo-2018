@@ -1,7 +1,7 @@
 ########### Python 3.6 #############
 import requests
-import twitterinterface.tweetextract
-import database as db
+from appC.tasks.twitterinterface import tweetextract
+from appC.tasks.twitterinterface import database as db
 def check(text):
 	headers = {
 	    # Request headers

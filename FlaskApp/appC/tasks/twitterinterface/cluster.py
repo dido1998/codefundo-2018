@@ -1,7 +1,7 @@
 from scipy.cluster.hierarchy import fclusterdata
 import numpy as np
 from sklearn.cluster import KMeans
-import FlaskApp.app as app
+from appC.tasks.twitterinterface import database as db
 from math import radians, cos, sin, asin, sqrt
 def haversine(lon1, lat1, lon2, lat2):
     """
@@ -19,7 +19,7 @@ def haversine(lon1, lat1, lon2, lat2):
     km = 6371* c
     return km
 
-
+"""
 def assignpeople(people,ngos):
 	cntngo=len(ngos)
 	d=np.zeros((len(people),2))
@@ -55,16 +55,16 @@ def assignpeople(people,ngos):
 					mindist=dist
 					min=j
 		for p in people:
-			app.insertngocurr(ngo[min][0],str(p[1]),str(p[2]),p[0])
-			app.insertrescuengo(p[0],ngo[min][0])
+			db.insertngocurr(ngo[min][0],str(p[1]),str(p[2]),p[0])
+			db.insertrescuengo(p[0],ngo[min][0])
 
-
+"""
 def precluster(people,ngo):
 	for p in people:
 		p.append(1)
 	for n in ngo:
 		n.append(0)
-	data=people+ngo
+	data=people
 	newngo=[]
 	datanp=np.zeros((len(data),2))
 	for i,d in enumerate(data):
@@ -75,14 +75,7 @@ def precluster(people,ngo):
 			datanp[i,0]=d[5]
 			datanp[i,1]=d[6]
 	cluster=fclusterdata(datanp,1)
-	initcnt=len(people)
-	for w,n in enumerate(ngo):
-		cnt=0
-		for e,p in enumerate(people):
-			if cluster[e]==cluster[initcnt+w]:
-				cnt+=1
-		if cnt>0:
-			newngo.append(n)
-	cluster(people,newngo)
+	
+	
 if __name__=='__main__':
 	assignpeople()
