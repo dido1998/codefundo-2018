@@ -1,5 +1,5 @@
 from celery.schedules import crontab
-
+#YES
 
 CELERY_IMPORTS = ('appC.tasks.test')
 CELERY_TASK_RESULT_EXPIRES = 30
