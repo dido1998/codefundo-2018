@@ -88,13 +88,9 @@
 
                 <h3 class="subhead">Welcome {{ session_user_name }}</h3>
                 <h1 class="display-1">
-                    Current Status -
+                    Current Status
                 </h1>
 
-                <a href="#0" class="page-header__search-trigger">
-                    <i class="fas fa-search" aria-hidden="true"></i>
-                    <span>Search the blog</span>
-                </a>
                 <div class="page-header__search">
                     <form role="search" method="get" class="page-header__search-form" action="#">
                         <label>
@@ -121,10 +117,17 @@
     <!--The div element for the map -->
     <div id="map"></div>
     <script>
+        
         // Initialize and add the map
         function initMap() {
+            var location_user_lat='{{geocode_user[0]}}'
+            var location_user_lon='{{geocode_user[1]}}'
+            var location_ngo_lat='{{geocode_ngo[0]}}'
+            var location_ngo_lon='{{geocode_ngo[1]}}'
+            console.log(location_user_lon)
+            console.log(location_user_lat)
           // The location of Uluru
-          var uluru = {lat: -25.344, lng: 131.036};
+          var uluru = {lat: Number(location_user_lat), lng: Number(location_user_lon)};
           // The map, centered at Uluru
           var map = new google.maps.Map(
               document.getElementById('map'), {zoom: 4, center: uluru});

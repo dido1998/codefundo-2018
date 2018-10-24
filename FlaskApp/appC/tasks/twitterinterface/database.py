@@ -1,6 +1,21 @@
 from flaskext.mysql import MySQL
 from appC.tasks.twitterinterface import cluster as cl
-
+from math import radians, cos, sin, asin, sqrt
+def haversine(lon1, lat1, lon2, lat2):
+    """
+    Calculate the great circle distance between two points 
+    on the earth (specified in decimal degrees)
+    """
+    # convert decimal degrees to radians 
+    lon1, lat1, lon2, lat2 = map(radians, [float(lon1), float(lat1), float(lon2), float(lat2)])
+    # haversine formula 
+    dlon = lon2 - lon1 
+    dlat = lat2 - lat1 
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2 * asin(sqrt(a)) 
+    # Radius of earth in kilometers is 6371
+    km = 6371* c
+    return km
 mysql = MySQL()
 conn=None
 cursor=None
@@ -54,7 +69,31 @@ def delentryuser(idstr):
 def deleteentryngo(idstr):
     global cursor
     cursor.execute('delete from ngo where id='+idstr)
+    
 
+def getlatlongofuserandngo(username):
+	global cursor	
+	cursor.execute('select * from ngo where name=%s',username)
+	data=cursor.fetchall()
+	id=data[0][0]
+	lat=data[0][4]
+	lon=data[0][5]
+	cursor.execute("select * from ngo where id="+str(id))
+	data2=cursor.fetchall()
+	curlat=float(data2[0][4])
+	curlon=float(data2[0][5])
+	min=haversine(lon,lat,curlat,curlon)	
+	minlat=data[0][4]
+	minlon=data[0][5]	
+	for i in data2:
+		print(type(i))
+		dist=haversine(float(i[5]),float(i[4]),lon,lat)
+		if dist<min:
+			min=dist
+			minlat=i[4]
+			minlon=i[5]
+	return float(minlat),float(minlon),float(lat),float(lon)
+		
 def updatelocngo(idstr,newlat,newlong):
     global cursor
     cursor.execute('update ngo set lat=%s where id=%d'+(newlat,idstr))

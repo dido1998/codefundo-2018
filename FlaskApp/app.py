@@ -64,8 +64,17 @@ def showSignUp():
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
     if 'username' in session:
+        lat,lon,lat2,lon2=database.getlatlongofuserandngo(session['username'])
+        events={}
+        events['lat1']=lat
+        events['lon1']=lon
+        events['lat2']=lat2
+        events['lon2']=lon2
+        geocode_user=events['lat1'],events['lon1']
+        geocode_ngo=events['lat2'],events['lon2']
         username_session = escape(session['username']).capitalize()
-        return render_template('loginpage.html', session_user_name=username_session)
+        return render_template('loginpage.html', session_user_name=username_session,geocode_ngo=geocode_ngo,geocode_user=geocode_user)
+
     return redirect(url_for('index'))
     #return render_template('loginpage.html')
 
