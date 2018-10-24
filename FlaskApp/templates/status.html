@@ -37,7 +37,115 @@
     ================================================== -->
     <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    
+    <script>
+        // San Jacinto River flooding
+        //-95.1,29.8,-95.0,29.9
 
+        var bounds = new L.LatLngBounds(new L.LatLng(29.88255, -95.09723), new L.LatLng(29.79511, -95.0114));
+
+        var mymap = L.map('mapid', {
+            maxBounds: bounds,
+            maxBoundsViscosity: 1.0
+        }).setView([29.82843, -95.0744], 15);
+
+        mymap.options.maxZoom = 18;
+        mymap.options.minZoom = 14;
+
+        var local_tiles_root = 'file:///Users/jkwok/Documents/Insight/tools/jTileDownloader 2/digitalglobe/'
+        var web_tiles_root = 'tiles/'
+        var tiles_root = web_tiles_root
+
+        var pre_hurricane = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}@2x.png?access_token={accessToken}', {
+            maxZoom: 18,
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+                '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            id: 'mapbox.satellite',
+            accessToken: 'pk.eyJ1IjoiamFja2t3b2siLCJhIjoiY2o3YXBmc2YyMGlvMjJ3cnNhc3ozZmw5MCJ9.noMLXNAU-AB9ESNUDuuAyg'
+        });
+
+        var street = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}@2x.png?access_token={accessToken}', {
+            maxZoom: 18,
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+                '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            id: 'mapbox.streets',
+            accessToken: 'pk.eyJ1IjoiamFja2t3b2siLCJhIjoiY2o3YXBmc2YyMGlvMjJ3cnNhc3ozZmw5MCJ9.noMLXNAU-AB9ESNUDuuAyg'
+        });
+
+        // Post Hurrican Satellite Imagery
+        var post_hurricane = L.tileLayer('https://api.mapbox.com/v4/{id}/{z}/{x}/{y}@2x.jpg?access_token={accessToken}', {
+            maxZoom: 18,
+            id: 'jackkwok.digitalglobe_harvey_3020132_tif',
+            accessToken: 'pk.eyJ1IjoiamFja2t3b2siLCJhIjoiY2o3YXBmc2YyMGlvMjJ3cnNhc3ozZmw5MCJ9.noMLXNAU-AB9ESNUDuuAyg',
+            attribution: 'DigitalGlobe  <a href="https://www.digitalglobe.com/opendata/hurricane-irma/license">License</a>',
+        });
+
+        var jk_attribution = '© Jack Kwok <a href="https://creativecommons.org/licenses/by/2.0/">License</a>'
+
+        // TODO set bounds: to avoid hitting AWS S3 necessarily.
+        // https://gis.stackexchange.com/questions/69738/leafletjs-load-tile-layer-based-on-bounding-box
+        var inspector = L.tileLayer(tiles_root + 'anomaly_mask_v141812/{z}/{x}/{y}.png', {
+            minNativeZoom: 16,
+            maxNativeZoom: 16,
+            attribution: jk_attribution,
+        });
+
+        var pre_road_seg_mask = L.tileLayer(tiles_root + 'mapbox_sat_mask/{z}/{x}/{y}.jpg', {
+            minNativeZoom: 16,
+            maxNativeZoom: 16,
+            attribution: jk_attribution,
+        });
+
+        pre_road_seg_mask.setOpacity(0.5)
+
+        var post_road_seg_mask_223544 = L.tileLayer(tiles_root + 'jackkwok.digitalglobe_harvey_3020132_tif_mask/{z}/{x}/{y}.jpg', {
+            minNativeZoom: 16,
+            maxNativeZoom: 16,
+            attribution: jk_attribution,
+        });
+
+        var post_road_seg_mask_141812 = L.tileLayer(tiles_root + '141812_post_mask/{z}/{x}/{y}.jpg', {
+            minNativeZoom: 16,
+            maxNativeZoom: 16,
+            attribution: jk_attribution,
+        });
+
+        post_road_seg_mask_141812.setOpacity(0.5)
+
+        var post_inspector = L.layerGroup([post_hurricane, inspector]);
+        var pre_road_seg = L.layerGroup([pre_hurricane, pre_road_seg_mask]);
+        var post_road_seg = L.layerGroup([post_hurricane, post_road_seg_mask_141812]);
+
+        var baseMaps = {
+            "Street Base Map": street,
+            "Pre Harvey Satelllite": pre_hurricane,
+            "Post Harvey Satellite": post_inspector,
+            "Pre Harvey Road Seg": pre_road_seg,
+            "Post Harvey Road Seg": post_road_seg
+        };
+
+        var overlayMaps = {
+            "Inspector": inspector
+        };
+
+        pre_hurricane.addTo(mymap);
+
+        L.control.layers(baseMaps, overlayMaps).addTo(mymap);
+
+        var popup = L.popup();
+
+        function onMapClick(e) {
+            popup
+                .setLatLng(e.latlng)
+                .setContent(e.latlng.toString())
+                .openOn(mymap);
+        }
+
+        mymap.on('click', onMapClick);
+
+    </script>
 </head>
 
 <body id="top">
