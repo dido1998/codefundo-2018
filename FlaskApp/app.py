@@ -59,15 +59,25 @@ def index():
 
 @app.route('/checkStatus')
 def showSignUp():
-    return render_template('status.html')
+    return render_template('status.html' )
 
 @app.route('/receiver', methods = ['POST'])
 def worker():
     data = request.form['keyword']
     print(data)
-    result = ''
-    print(result)
-    return result
+    result = data.split(',')
+    #print(result)
+    if int(result[2])==1:
+        print("reached")
+        database.insertuser(result[0],result[1])
+    ngolat,ngolon=database.getngolatlon(result[0],result[1])
+    print("valure")
+    print(ngolat)
+    print(ngolon)
+    # print(result)
+    # showSignUp()
+    # return redirect(url_for('checkStatus'))
+    return result[0]+','+result[1]+','+ngolat+','+ngolon#render_template('status.html',geocode_ngo=geocode_ngo,geocode_user=geocode_user)
 
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -82,7 +92,7 @@ def profile():
         geocode_user=events['lat1'],events['lon1']
         geocode_ngo=events['lat2'],events['lon2']
         username_session = escape(session['username']).capitalize()
-        return render_template('loginpage.html', session_user_name=username_session,geocode_ngo=geocode_ngo,geocode_user=geocode_user   )
+        return render_template('loginpage.html', session_user_name=username_session,geocode_ngo=geocode_ngo,geocode_user=geocode_user  )
 
     return redirect(url_for('index'))
     #return render_template('loginpage.html')
@@ -167,7 +177,7 @@ def signUp():
         else:
             return "Enter the required Fields"
             #return json.dumps({'html':'<span>Enter the required fields</span>'})
-
+        database.checkusertable()
     except Exception as e:
         print (str(e))
         return "Please Enter the fields correctly"

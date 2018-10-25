@@ -40,8 +40,9 @@ def insertngo(name,email,password,lat,lng):
     cursor.execute("INSERT INTO ngo (email,name,pass,lat,lon) VALUES(%s,%s,%s,%s,%s)",(_email,_name,_password,str(lat),str(lon)))
 
 def insertuser(lat,lon):
-	global cursor    
+	global cursor   
 	cursor.execute("INSERT INTO user (lat,lon) VALUES(%s,%s)",(str(lat),str(lon)))
+	commit()	
 	checkusertable()
 
 def insertngocurr(ids,rescuelat,rescuelon,rescueid):
@@ -94,7 +95,27 @@ def getlatlongofuserandngo(username):
 			minlat=i[4]
 			minlon=i[5]
 	return float(minlat),float(minlon),float(lat),float(lon)
-		
+def getngolatlon(lat,lon):
+	global cursor
+	#cursor.execute("select id from user where lat=%s and lon=%s"+(lat,lon))
+	#userid=cursor.fetchall()
+	#userid=userid[0][0]
+	cursor.execute("select id from ngo_saver where  rescue_lat=%s and rescue_lon=%s",(lat,lon))
+	print(lat)
+	print(lon)
+	data=cursor.fetchall()
+	print(data)
+	data=data[0][0]
+	cursor.execute("select * from ngo")
+	lat,lon=None,None	
+	ngodata=cursor.fetchall()
+	for n in ngodata:
+		if n[0]==data:
+			lat=n[4]
+			lon=n[5]
+	#lat,lon=coord[0][0],coord[0][1]
+	#13.3476342,74.7922021
+	return lat,lon				
 def updatelocngo(idstr,newlat,newlong):
     global cursor
     cursor.execute('update ngo set lat=%s where id=%d'+(newlat,idstr))
@@ -107,8 +128,11 @@ def updatelocngo(idstr,newlat,newlong):
             delentryuser(p[0])
 def checkusertable():
     global cursor
-    cursor.execute('select * from user where rescue_id=NULL')
+	
+    cursor.execute('select * from user where rescue_id is NULL')
     data=cursor.fetchall()
+    print("check table reached")
+    print(len(data))
     if(len(data)>0):
         newdata=[]
         for i,d in enumerate(data):
@@ -123,5 +147,6 @@ def checkusertable():
             newdatango.append(list(datango[i]))
             newdatango[i][4]=float(d[4])
             newdatango[i][5]=float(d[5])
+        print("call precluster")
         cl.precluster(newdata,newdatango)
 #aniket

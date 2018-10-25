@@ -60,6 +60,7 @@ def assignpeople(people,ngos):
 
 """
 def precluster(people,ngo):
+	print("in precluster!!!!")
 	for p in people:
 		p.append(1)
 	for n in ngo:
@@ -71,11 +72,39 @@ def precluster(people,ngo):
 		if len(d)==5:
 			datanp[i,0]=d[1]
 			datanp[i,1]=d[2]
-		else:
-			datanp[i,0]=d[5]
-			datanp[i,1]=d[6]
-	cluster=fclusterdata(datanp,1)
+	if len(data)>1:	
+		cluster=fclusterdata(datanp,1)
+	else:
+		cluster=[0]	
+	for i,d in enumerate(data):
+		d.append(cluster[i])
+	data.sort(key=lambda x:x[5])
+		
+	curr=data[0][5]
+	i=0
+	while i<len(data):
+		temp=[]
+		while i<len(data) and data[i][5]==curr:
+			temp.append(data[i])
+			i+=1
+		if i<len(data):
+			curr=data[i][5]
+		cenlat=0
+		cenlon=0
+		for t in temp:
+			cenlat+=t[1]/len(temp)
+			cenlon+=t[2]/len(temp)
+		minindex=0
+		min=ngo[0]
+		for n in ngo:
+			if haversine(n[5],n[4],cenlon,cenlat)< haversine(min[5],min[4],cenlon,cenlat):
+				min=n
+		for t in temp:
+			print("inserting!!!!!!")
+			db.insertngocurr(min[0],str(t[1]),str(t[2]),t[0])
+			db.commit()
+			db.insertrescuengo(t[0],min[0])
+			db.commit()
+			
 	
-	
-if __name__=='__main__':
-	assignpeople()
+

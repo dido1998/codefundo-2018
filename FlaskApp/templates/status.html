@@ -142,12 +142,20 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2Fn0J57CMn5od7EHQQWlOoEAGxKK8kqo"></script>
     <script>
         
-
+      var location_user_lat=34.45;
+            var location_user_lon=12.4;
+            var location_ngo_lat=35.5;
+            var location_ngo_lon=11.3;
+            
         function mapLocation() {
-            var location_user_lat= 13.7
-            var location_user_lon=32.3
-            var location_ngo_lat=18.4
-            var location_ngo_lon=35.4
+            
+            //arr=data.split(',');
+          
+            // var location_user_lat= 13.7
+            // var location_user_lon=32.3
+            // var location_ngo_lat=18.4
+            // var location_ngo_lon=35.4
+          alert(location_ngo_lon);
           var directionsDisplay;
           var directionsService = new google.maps.DirectionsService();
           var map;
@@ -155,7 +163,7 @@
           function initialize() {
             
             directionsDisplay = new google.maps.DirectionsRenderer();
-            var chicago = new google.maps.LatLng(Number(location_ngo_lat), Number(location_ngo_lat));
+            var chicago = new google.maps.LatLng(36.7783, 119.4789);
             var mapOptions = {
               zoom: 7,
               center: chicago
@@ -166,8 +174,9 @@
           }
 
           function calcRoute() {
-            var start = new google.maps.LatLng(Number(location_ngo_lat), Number(location_ngo_lat));
+            var start = new google.maps.LatLng(Number(12.9141), Number(74.8560));
             var end = new google.maps.LatLng(Number(location_user_lat), Number(location_user_lon));
+            alert(location_ngo_lon)
             var request = {
               origin: start,
               destination: end,
@@ -185,7 +194,7 @@
 
           google.maps.event.addDomListener(window, 'load', initialize);
     }
-mapLocation();
+    mapLocation();
     </script>
 
 
@@ -653,6 +662,44 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
             var user=getCookie("username");
 
             
+            
+            if (user != "") {
+                
+                var arr = user.split(',')
+                send=arr[1]+','+arr[2]+',0'
+                alert("Welcome again " + arr[0]);
+                $.ajax({
+            type: "POST",
+           
+            data:{keyword:send},
+            url: './receiver',
+            success: function(data) { 
+                alert('yoo');
+                arr=data.split(',')
+                location_user_lat=Number(arr[0])
+                location_user_lon=Number(arr[1])
+                location_ngo_lat=Number(arr[2])
+                location_ngo_lon=Number(arr[3])
+                alert(location_ngo_lon)
+                mapLocation();
+                console.log(data);                    
+            },
+            error: function(req, textstatus,errorthrown) {
+                alert('error'+textstatus+' '+errorthrown);
+                
+                //alert(jqXHR)
+                // alert("error: " + jqXHR.status);
+                // alert(jqXHR)
+                console.log(jqXHR);
+            }
+        })
+            } else {
+                finalco=finalco+",1"
+               user = prompt("Please enter your email:","");
+               user = user + ','+ finalco;
+               
+               if (user != "" && user != null) {
+                   setCookie("username", user, 30);
             $.ajax({
             type: "POST",
             cache: false,
@@ -661,27 +708,22 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
             dataType: "json",
             success: function(data) { 
                 alert('yoo')
+                //mapLocation(data);
+
                 console.log(data);                    
             },
             error: function(jqXHR) {
+                alert('error');
+                alert(jqXHR);
+                
                 // alert("error: " + jqXHR.status);
                 // alert(jqXHR)
                 console.log(jqXHR);
             }
         })
-            if (user != "") {
-                var arr = user.split(',')
-                alert("Welcome again " + arr[0]);
-            } else {
-               user = prompt("Please enter your name:","");
-               user = user + ','+ finalco;
-               if (user != "" && user != null) {
-                   setCookie("username", user, 30);
-
                }
             }
-             
-        }
+                }
         
         function ipLookUp () {
               $.ajax('http://ip-api.com/json')
