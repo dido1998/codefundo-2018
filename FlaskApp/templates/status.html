@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
 <head>
+    <style>
+/*      #map {
+        width: 100%;
+        height: 400px;
+        background-color: grey;
+      }*/
+    #map-canvas {
+    height: 600px;
+    width: 100%;
+    margin: 0px;
+    padding: 0px
+}
+    </style>
 
     <!--- basic page needs
     ================================================== -->
@@ -33,12 +46,179 @@
     <script src="/static/js/modernizr.js"></script>
     <script src="/static/js/pace.min.js"></script>
 
+    <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin=""/>
+    
+    <link rel="stylesheet" href="https://cdn.rawgit.com/balzss/luxbar/ae5835e2/build/luxbar.min.css">
+
+    <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin=""></script>
+
     <!-- favicons
     ================================================== -->
     <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
     
+    
+   
+</head>
+
+<body id="top"  >
+
+    <div id="preloader">
+        <div id="loader"></div>
+    </div>
+
+
+    <!-- header 
+    ================================================== -->
+    <header class="s-header">
+
+        <div class="header-logo">
+            <a class="site-logo" href="index.html">
+                <img src="images/logo.svg" alt="Homepage">
+            </a>
+        </div>
+
+        <nav class="row header-nav-wrap wide">
+            <ul class="header-main-nav">
+                <li><a href="index.html" title="intro">Home</a></li>
+                <li class="current"><a href="blog.html" title="blog">Blog</a></li>  
+            </ul>
+
+            <ul class="header-social">
+                <li><a href="#0"><i class="fab fa-facebook-f" aria-hidden="true"></i></a></li>
+                <li><a href="#0"><i class="fab fa-twitter" aria-hidden="true"></i></a></li>
+                <li><a href="#0"><i class="fab fa-instagram" aria-hidden="true"></i></a></li>
+            </ul>
+        </nav>
+
+        <a class="header-menu-toggle" href="#"><span>Menu</span></a>
+    
+    </header> <!-- end header -->
+
+
+    <!-- article
+    ================================================== -->
+    <article class="blog-single">
+
+
+        <!-- page header
+        ================================================== -->
+        <div class="page-header page-header--single" style="background-image:url(images/blog/blog-bg-01.jpg)">
+
+            <div class="row page-header__content">
+                <div class="col-full">
+
+                    <h1 class="display-1">
+                        Estimated time for Relief.
+                    </h1>
+                    <ul class="page-header__meta">
+                        <li class="author">Address: <a href="#0">Jonathan Doe</a></li>
+                        <li class="date">September 14, 2018</li>
+                        <li class="cat-links">
+                            <a href="#0">Marketing</a><a href="#0">Management</a>
+                        </li>
+                    </ul>
+                    
+                </div>
+            </div>
+
+        </div> <!-- end page-header -->
+
+
+        <!-- blog content
+        ================================================== -->
+        <div class="blog-content-wrap">
+
+            <h3>Flooded Locations</h3>
+    <!--The div element for the map -->
+    <!-- <div id="map"></div>
+     -->
+      
+    
+    <input type="button" id="routebtn" value="route" />
+    <div id="map-canvas"></div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2Fn0J57CMn5od7EHQQWlOoEAGxKK8kqo"></script>
     <script>
+        
+
+        function mapLocation() {
+            var location_user_lat= 13.7
+            var location_user_lon=32.3
+            var location_ngo_lat=18.4
+            var location_ngo_lon=35.4
+          var directionsDisplay;
+          var directionsService = new google.maps.DirectionsService();
+          var map;
+
+          function initialize() {
+            
+            directionsDisplay = new google.maps.DirectionsRenderer();
+            var chicago = new google.maps.LatLng(Number(location_ngo_lat), Number(location_ngo_lat));
+            var mapOptions = {
+              zoom: 7,
+              center: chicago
+            };
+            map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+            directionsDisplay.setMap(map);
+            google.maps.event.addDomListener(document.getElementById('routebtn'), 'click', calcRoute);
+          }
+
+          function calcRoute() {
+            var start = new google.maps.LatLng(Number(location_ngo_lat), Number(location_ngo_lat));
+            var end = new google.maps.LatLng(Number(location_user_lat), Number(location_user_lon));
+            var request = {
+              origin: start,
+              destination: end,
+              travelMode: google.maps.TravelMode.DRIVING
+            };
+            directionsService.route(request, function(response, status) {
+              if (status == google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setDirections(response);
+                directionsDisplay.setMap(map);
+              } else {
+                alert("Directions Request from " + start.toUrlValue(6) + " to " + end.toUrlValue(6) + " failed: " + status);
+              }
+            });
+          }
+
+          google.maps.event.addDomListener(window, 'load', initialize);
+    }
+mapLocation();
+    </script>
+
+
+        </div> <!-- end blog-content-wrap -->
+
+    </article> <!-- end article(blog-single) -->
+
+
+    <!-- blog nav
+    ================================================== -->
+    <div class="blog-single-nav-wrap">
+        <div class="row blog-single-nav">
+            <div class="col-six blog-single-nav__prev">
+                <a href="#0" rel="prev">
+                    <span>Prev</span>
+                    The Pomodoro Technique Really Works. 
+                </a>
+            </div>
+            <div class="col-six blog-single-nav__next">
+                <a href="#0" rel="next">
+                    <span>Next</span>
+                    How Imagery Drives User Experience.
+                </a>
+            </div>
+        </div>
+    </div> <!-- end blog-single-nav-wrap-->
+
+
+    <!-- comments
+    ================================================== -->
+    <div class="comments-wrap">
+        <div id="mapid" style="width: 100%; height: 800px;"></div>
+     <script>
         // San Jacinto River flooding
         //-95.1,29.8,-95.0,29.9
 
@@ -146,176 +326,6 @@
         mymap.on('click', onMapClick);
 
     </script>
-</head>
-
-<body id="top"  >
-
-    <div id="preloader">
-        <div id="loader"></div>
-    </div>
-
-
-    <!-- header 
-    ================================================== -->
-    <header class="s-header">
-
-        <div class="header-logo">
-            <a class="site-logo" href="index.html">
-                <img src="images/logo.svg" alt="Homepage">
-            </a>
-        </div>
-
-        <nav class="row header-nav-wrap wide">
-            <ul class="header-main-nav">
-                <li><a href="index.html" title="intro">Home</a></li>
-                <li class="current"><a href="blog.html" title="blog">Blog</a></li>  
-            </ul>
-
-            <ul class="header-social">
-                <li><a href="#0"><i class="fab fa-facebook-f" aria-hidden="true"></i></a></li>
-                <li><a href="#0"><i class="fab fa-twitter" aria-hidden="true"></i></a></li>
-                <li><a href="#0"><i class="fab fa-instagram" aria-hidden="true"></i></a></li>
-            </ul>
-        </nav>
-
-        <a class="header-menu-toggle" href="#"><span>Menu</span></a>
-    
-    </header> <!-- end header -->
-
-
-    <!-- article
-    ================================================== -->
-    <article class="blog-single">
-
-
-        <!-- page header
-        ================================================== -->
-        <div class="page-header page-header--single" style="background-image:url(images/blog/blog-bg-01.jpg)">
-
-            <div class="row page-header__content">
-                <div class="col-full">
-
-                    <h1 class="display-1">
-                        Estimated time for Relief.
-                    </h1>
-                    <ul class="page-header__meta">
-                        <li class="author">Address: <a href="#0">Jonathan Doe</a></li>
-                        <li class="date">September 14, 2018</li>
-                        <li class="cat-links">
-                            <a href="#0">Marketing</a><a href="#0">Management</a>
-                        </li>
-                    </ul>
-                    
-                </div>
-            </div>
-
-        </div> <!-- end page-header -->
-
-
-        <!-- blog content
-        ================================================== -->
-        <div class="blog-content-wrap">
-
-            <div class="row blog-content">
-                <div class="col-full blog-content__main">
-    
-                    <p class="lead drop-cap">Duis ex ad cupidatat tempor Excepteur cillum cupidatat fugiat nostrud cupidatat dolor sunt sint sit nisi est eu exercitation incididunt adipisicing veniam velit id fugiat enim mollit amet anim veniam dolor dolor irure velit commodo cillum sit nulla ullamco magna amet magna cupidatat qui labore cillum sit in tempor veniam consequat non laborum adipisicing aliqua ea nisi sint.</p>
-                    
-                    <p>Duis ex ad cupidatat tempor Excepteur cillum cupidatat fugiat nostrud cupidatat dolor sunt sint sit nisi est eu exercitation incididunt adipisicing veniam velit id fugiat enim mollit amet anim veniam dolor dolor irure velit commodo cillum sit nulla ullamco magna amet magna cupidatat qui labore cillum sit in tempor veniam consequat non laborum adipisicing aliqua ea nisi sint ut quis proident ullamco ut dolore culpa occaecat ut laboris in sit minim cupidatat ut dolor voluptate enim veniam consequat occaecat fugiat in adipisicing in amet Ut nulla nisi non ut enim aliqua laborum mollit quis nostrud sed sed.
-                    </p>
-    
-                    <p>
-                    <img src="images/wheel-1000.jpg" 
-                         srcset="images/wheel-2000.jpg 2000w, 
-                            images/wheel-1000.jpg 1000w, 
-                            images/wheel-500.jpg 500w" 
-                         sizes="(max-width: 2000px) 100vw, 2000px" alt="">
-                    </p>
-    
-                    <h2>Large Heading</h2>
-    
-                    <p>Harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus <a href="http://#">omnis voluptas assumenda est</a> id quod maxime placeat facere possimus, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et.</p>
-    
-                    <blockquote><p>This is a simple example of a styled blockquote. A blockquote tag typically specifies a section that is quoted from another source of some sort, or highlighting text in your post.</p></blockquote>
-    
-                    <p>Odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nulla vitae elit libero, a pharetra augue laboris in sit minim cupidatat ut dolor voluptate enim veniam consequat occaecat fugiat in adipisicing in amet Ut nulla nisi non ut enim aliqua laborum mollit quis nostrud sed sed.</p>
-    
-                    <h3>Smaller Heading</h3>
-    
-                    <p>Dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nulla vitae elit libero, a pharetra augue laboris in sit minim cupidatat ut dolor voluptate enim veniam consequat occaecat fugiat in adipisicing in amet Ut nulla nisi non ut enim aliqua laborum mollit quis nostrud sed sed.
-    
-<pre><code>
-code {
-    font-size: 1.4rem;
-    margin: 0 .2rem;
-    padding: .2rem .6rem;
-    white-space: nowrap;
-    background: #F1F1F1;
-    border: 1px solid #E1E1E1;  
-    border-radius: 3px;
-}
-</code></pre>
-    
-                    <p>Odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa.</p>
-    
-                    <ul>
-                        <li>Donec nulla non metus auctor fringilla.
-                            <ul>
-                                <li>Lorem ipsum dolor sit amet.</li>
-                                <li>Lorem ipsum dolor sit amet.</li>
-                                <li>Lorem ipsum dolor sit amet.</li>
-                            </ul>
-                        </li>
-                        <li>Donec nulla non metus auctor fringilla.</li>
-                        <li>Donec nulla non metus auctor fringilla.</li>
-                    </ul>
-    
-                    <p>Odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nulla vitae elit libero, a pharetra augue laboris in sit minim cupidatat ut dolor voluptate enim veniam consequat occaecat fugiat in adipisicing in amet Ut nulla nisi non ut enim aliqua laborum mollit quis nostrud sed sed.</p>
-    
-                    <p class="blog-content__tags">
-                        <span>Post Tags</span>
-    
-                        <span class="blog-content__tag-list">
-                            <a href="#0">orci</a>
-                            <a href="#0">lectus</a>
-                            <a href="#0">varius</a>
-                            <a href="#0">turpis</a>
-                        </span>
-    
-                    </p>
-
-                </div><!-- end blog-content__main -->
-            </div> <!-- end blog-content -->
-
-
-        </div> <!-- end blog-content-wrap -->
-
-    </article> <!-- end article(blog-single) -->
-
-
-    <!-- blog nav
-    ================================================== -->
-    <div class="blog-single-nav-wrap">
-        <div class="row blog-single-nav">
-            <div class="col-six blog-single-nav__prev">
-                <a href="#0" rel="prev">
-                    <span>Prev</span>
-                    The Pomodoro Technique Really Works. 
-                </a>
-            </div>
-            <div class="col-six blog-single-nav__next">
-                <a href="#0" rel="next">
-                    <span>Next</span>
-                    How Imagery Drives User Experience.
-                </a>
-            </div>
-        </div>
-    </div> <!-- end blog-single-nav-wrap-->
-
-
-    <!-- comments
-    ================================================== -->
-    <div class="comments-wrap">
 
         <div id="comments" class="row">
             <div class="col-full">
@@ -615,12 +625,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 
     <script type="text/javascript">
     var user_lat, user_long;
-    var cars = [
-    { "make":"Porsche", "model":"911S" },
-    { "make":"Mercedes-Benz", "model":"220SE" },
-    { "make":"Jaguar","model": "Mark VII" }
-    ];
-
+    var finalco;
     function setCookie(cname,cvalue,exdays) {
             var d = new Date();
             d.setTime(d.getTime() + (exdays*24*60*60*1000));
@@ -646,11 +651,8 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 
         function checkCookie() {
             var user=getCookie("username");
-            // coo = [user_lat, user_long]
-            var coo = [{"lat":"12"},
-                    {"lon":"123"}];
-            alert(cars)
-            finalco= String(user_lat) + ',' + String(user_long);
+
+            
             $.ajax({
             type: "POST",
             cache: false,
@@ -668,9 +670,11 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
             }
         })
             if (user != "") {
-                alert("Welcome again " + user);
+                var arr = user.split(',')
+                alert("Welcome again " + arr[0]);
             } else {
                user = prompt("Please enter your name:","");
+               user = user + ','+ finalco;
                if (user != "" && user != null) {
                    setCookie("username", user, 30);
 
@@ -717,6 +721,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
              // for when getting location is a success
              user_lat = position.coords.latitude;
              user_long = position.coords.longitude;
+             finalco = String(user_lat) + ',' + String(user_long);
              console.log('latitude', position.coords.latitude, 
                          'longitude', position.coords.longitude);
              getAddress(position.coords.latitude, 

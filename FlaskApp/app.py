@@ -63,16 +63,9 @@ def showSignUp():
 
 @app.route('/receiver', methods = ['POST'])
 def worker():
-    # read json + reply
-    # data = request.get_json()
-    # print(data)
     data = request.form['keyword']
     print(data)
     result = ''
-
-    # for item in data:
-    #     # loop over every row
-    #     result += str(item['make']) + '\n'
     print(result)
     return result
 
