@@ -13,6 +13,6 @@ CELERYBEAT_SCHEDULE = {
     'test-celery': {
         'task': 'appC.tasks.test.print_hello',
         # Every minute
-        'schedule': crontab(minute="*"),
+        'schedule': crontab(minute="60"),
     }
 }
