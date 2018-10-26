@@ -15,6 +15,7 @@ def haversine(lon1, lat1, lon2, lat2):
     c = 2 * asin(sqrt(a)) 
     # Radius of earth in kilometers is 6371
     km = 6371* c
+    print(km)
     return km
 mysql = MySQL()
 conn=None
@@ -75,25 +76,30 @@ def deleteentryngo(idstr):
 
 def getlatlongofuserandngo(username):
 	global cursor	
-	cursor.execute('select * from ngo where name=%s',username)
+
+	cursor.execute('select * from ngo where email=%s',username)
 	data=cursor.fetchall()
+	print(data)
 	id=data[0][0]
+	print("naru123:"+str(id))
 	lat=data[0][4]
 	lon=data[0][5]
-	cursor.execute("select * from ngo where id="+str(id))
+	cursor.execute("select * from ngo_saver where id="+str(id))
 	data2=cursor.fetchall()
-	curlat=float(data2[0][4])
-	curlon=float(data2[0][5])
+	if len(data2)==0:
+		return None,None,None,None
+	curlat=float(data2[0][1])
+	curlon=float(data2[0][2])
 	min=haversine(lon,lat,curlat,curlon)	
-	minlat=data[0][4]
-	minlon=data[0][5]	
+	minlat=data2[0][1]
+	minlon=data2[0][2]	
 	for i in data2:
 		print(type(i))
-		dist=haversine(float(i[5]),float(i[4]),lon,lat)
+		dist=haversine(float(i[1]),float(i[2]),lon,lat)
 		if dist<min:
 			min=dist
-			minlat=i[4]
-			minlon=i[5]
+			minlat=i[1]
+			minlon=i[2]
 	return float(minlat),float(minlon),float(lat),float(lon)
 def getngolatlon(lat,lon):
 	global cursor
