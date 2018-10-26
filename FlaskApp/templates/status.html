@@ -112,11 +112,9 @@
                         Estimated time for Relief.
                     </h1>
                     <ul class="page-header__meta">
-                        <li class="author">Address: <a href="#0">Jonathan Doe</a></li>
-                        <li class="date">September 14, 2018</li>
-                        <li class="cat-links">
-                            <a href="#0">Marketing</a><a href="#0">Management</a>
-                        </li>
+                        <li class="author">NGO location: <a href="#0"><p id="location_ngo"></p></a></li>
+                        <li class="author">Distance: <a href="#0"><p id="distance"></p></a></li>
+                        
                     </ul>
                     
                 </div>
@@ -153,7 +151,7 @@
             // var location_user_lon=32.3
             // var location_ngo_lat=18.4
             // var location_ngo_lon=35.4
-          alert(location_ngo_lon);
+          //alert(location_ngo_lon);
           var directionsDisplay;
           var directionsService = new google.maps.DirectionsService();
           var map;
@@ -161,7 +159,7 @@
           function initialize() {
             
             directionsDisplay = new google.maps.DirectionsRenderer();
-            var chicago = new google.maps.LatLng(36.7783, 119.4789);
+            var chicago = new google.maps.LatLng(10.8505, 76.2711);
             var mapOptions = {
               zoom: 7,
               center: chicago
@@ -174,7 +172,7 @@
           function calcRoute() {
             var start = new google.maps.LatLng(Number(12.9141), Number(74.8560));
             var end = new google.maps.LatLng(Number(location_user_lat), Number(location_user_lon));
-            alert(location_ngo_lon)
+            //alert(location_ngo_lon)
             var request = {
               origin: start,
               destination: end,
@@ -471,25 +469,30 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                 
                 var arr = user.split(',')
                 send=arr[1]+','+arr[2]+',0'
-                alert("Welcome again " + arr[0]);
+                //alert("Welcome again " + arr[0]);
                 $.ajax({
             type: "POST",
            
             data:{keyword:send},
             url: './receiver',
             success: function(data) { 
-                alert('yoo');
-                arr=data.split(',')
+                //alert('yoo');
+                arr=data.split('!')
                 location_user_lat=Number(arr[0])
                 location_user_lon=Number(arr[1])
                 location_ngo_lat=Number(arr[2])
                 location_ngo_lon=Number(arr[3])
-                alert(location_ngo_lon)
+                ngo_address=arr[4]
+                ngo_dist=arr[5]
+                //alert(ngo_address);
+                document.getElementById("location_ngo").innerHTML = String(ngo_address);
+                document.getElementById("distance").innerHTML = String(ngo_dist);
+                //alert(location_ngo_lon)
                 mapLocation();
                 console.log(data);                    
             },
             error: function(req, textstatus,errorthrown) {
-                alert('error'+textstatus+' '+errorthrown);
+                //alert('error'+textstatus+' '+errorthrown);
                 
                 //alert(jqXHR)
                 // alert("error: " + jqXHR.status);
@@ -511,14 +514,25 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
             url: './receiver',
             dataType: "json",
             success: function(data) { 
-                alert('yoo')
+                //alert('yoo')
                 //mapLocation(data);
-
+                 arr=data.split('!')
+                location_user_lat=Number(arr[0])
+                location_user_lon=Number(arr[1])
+                location_ngo_lat=Number(arr[2])
+                location_ngo_lon=Number(arr[3])
+                ngo_address=arr[4]
+                ngo_dist=arr[5]
+                document.getElementById("location_ngo").value = "ngo_address";
+                document.getElementById("distance").innerHTML = ngo_dist;
+                //alert(location_ngo_lon)
+                mapLocation();
+                //alert(ngo_dist)
                 console.log(data);                    
             },
             error: function(jqXHR) {
-                alert('error');
-                alert(jqXHR);
+                //alert('error');
+                //alert(jqXHR);
                 
                 // alert("error: " + jqXHR.status);
                 // alert(jqXHR)

@@ -74,10 +74,12 @@ def worker():
     print("valure")
     print(ngolat)
     print(ngolon)
+    address_user=geocoding.reversegeocode(ngolat,ngolon)
+    distance=database.haversine(ngolon,ngolat,result[1],result[0])
     # print(result)
     # showSignUp()
     # return redirect(url_for('checkStatus'))
-    return result[0]+','+result[1]+','+ngolat+','+ngolon#render_template('status.html',geocode_ngo=geocode_ngo,geocode_user=geocode_user)
+    return result[0]+'!'+result[1]+'!'+ngolat+'!'+ngolon+'!'+address_user+'!'+str(distance)#render_template('status.html',geocode_ngo=geocode_ngo,geocode_user=geocode_user)
 
 
 @app.route('/profile', methods=['GET', 'POST'])
