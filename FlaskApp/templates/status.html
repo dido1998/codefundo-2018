@@ -224,6 +224,7 @@
     <!-- comments
     ================================================== -->
     <div class="comments-wrap">
+        <button class="btn blue-gradient" data-toggle="modal" data-target="#howitworks">How it Works?</button>
         <div id="mapid" style="width: 100%; height: 800px;"></div>
      <script>
         // San Jacinto River flooding
@@ -589,4 +590,45 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
         }
 
     </script>
+     <div class="modal fade" id="howitworks" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+      <!--Content-->
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <p class="heading lead"></p>
+
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" class="white-text">&times;</span>
+          </button>
+        </div>
+
+        <!--Body-->
+        <div class="modal-body">
+          <div class="text-center">
+           <!--  <i class="fa fa-check fa-4x mb-3 animated rotateIn"></i>
+            --> <p>We used the <b>MapBox API</b> to get high quality satellite images. We built two styles, one for normal satellite imagery and one for the corresponding street maps. We used the API to extract nearly  10,000 pairs of images for training. The model was tested against the images downloaded via the DigitalGlobe Open Data Program. The data is divided into pre-hurricane and post-hurricane images. We segment both the images and the difference between the two gives us a segmented image of the flooded roads. Here is a example of a pair of image used for training.  
+            </p>
+            <img src="/static/images/road.png" alt="Road Segmentation">
+            <p>Live satellite images are polled and are segmented via the neural network and these images are published to the Azure Cluster VM and then Azure Web Server. A set of old already segmented images are fetched from mapbox of that same exact location. The generated and fetched image are then subtracted and if the difference is greater than a particular threshold, flooding is assumed to have occured. A threshold is given to accommodate for noise in the image.</p>
+            <img src="/static/images/azure.png" alt="Azure">
+            <p>We are using the dilated U-net as the architecture. The dilated version captures much more infrence than a normal U-net and the resolution of the image is not reduced at a very fast pace. This is also a state-of-the-art proven architecture for image segmentation.</p>
+            <img src="/static/images/network.png" alt="Neural network">
+
+          </div>
+          
+        </div>
+
+        <!--Footer-->
+        <div class="modal-footer">
+          <!-- <a type="button" class="btn btn-info">Get it now
+            <i class="fa fa-diamond ml-1"></i>
+          </a> -->
+          <a type="button" class="btn btn-outline-info waves-effect" data-dismiss="modal">Close</a>
+        </div>
+      </div>
+      <!--/.Content-->
+    </div>
+  </div>
+  <!-- Central Modal Large Info-->
 </body>
