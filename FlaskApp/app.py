@@ -199,9 +199,9 @@ def signUp():
         return "Please Enter the fields correctly"
         #return json.dumps({'error':str(e)})
         
-    finally:
-        cursor.close() 
-        conn.close()
+    #finally:
+    #    cursor.close() 
+    #    conn.close()
 
 @app.route('/logout')
 def logout():
