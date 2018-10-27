@@ -175,8 +175,8 @@ def signUp():
         print(_password)    
         if _name and _email and _password:
             # print("Reached")
-            # conn = mysql.connect()
-            # cursor = conn.cursor()
+            conn = mysql.connect()
+            cursor = conn.cursor()
             cursor.execute("INSERT INTO ngo (email,name,pass,lat,lon) VALUES(%s,%s,%s,%s,%s)",(_email,_name,_password,str(lat),str(lon)))
             print('coolllllll')
             data = cursor.fetchall()
@@ -192,7 +192,7 @@ def signUp():
         else:
             return "Enter the required Fields"
             #return json.dumps({'html':'<span>Enter the required fields</span>'})
-        database.checkusertable()
+        #database.checkusertable()
     except Exception as e:
         print (str(e))
         return "Please Enter the fields correctly"
