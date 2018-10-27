@@ -55,8 +55,9 @@ def gettweetbylocation(tweet):
     tweets = api.search(q='geocode:'+tweet['coordinates']['coordinates'][0]+','+tweet['coordinates']['coordinates'][1]+',50km')
     for t in tweets:
         if detectflood.check(t['text'])=='DetectFlood':
-            db.insertuser(t)
-    db.checkusertable()
+           if t['coordinates']!=None and t['coordinates']['coordinates']!=None:	
+              db.insertuser(t['coordinates']['coordinates'][1],t['coordinates']['coordinates'][0])
+
 
 
 if __name__=='__main__':

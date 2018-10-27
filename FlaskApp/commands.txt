@@ -1,6 +1,10 @@
 FLASK_APP=app.py FLASK_DEBUG=1 python3 -m flask run --host=0.0.0.0
+<<<<<<< HEAD
 
  celery worker -A appC.celery --loglevel=INFO
 
+=======
+celery worker -A appC.celery --loglevel=INFO
+>>>>>>> 5f68a3d68c69c34b2d7e24ed9c262e583f9eb450
 celery beat -A appC.celery --schedule=/tmp/celerybeat-schedule --loglevel=INFO --pidfile=/tmp/celerybeat.pid
 

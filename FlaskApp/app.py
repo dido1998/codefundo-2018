@@ -5,7 +5,7 @@ import urllib.request
 from os import environ
 from celery import Celery
 from appC.tasks import test 
-from appC.tasks.twitterinterface import database
+from appC.tasks.twitterinterface import database,geocoding
 app = Flask(__name__)
 mysql = MySQL()
 
@@ -59,30 +59,54 @@ def index():
 
 @app.route('/checkStatus')
 def showSignUp():
-    return render_template('status.html')
+    return render_template('status.html' )
 
 @app.route('/receiver', methods = ['POST'])
 def worker():
     data = request.form['keyword']
     print(data)
-    result = ''
-    print(result)
-    return result
+    result = data.split(',')
+    #print(result)
+    if int(result[2])==1:
+        print("reached")
+        database.insertuser(result[0],result[1])
+    ngolat,ngolon=database.getngolatlon(result[0],result[1])
+    print("valure")
+    print(ngolat)
+    print(ngolon)
+    address_user=geocoding.reversegeocode(ngolat,ngolon)
+    distance=database.haversine(ngolon,ngolat,result[1],result[0])
+    # print(result)
+    # showSignUp()
+    # return redirect(url_for('checkStatus'))
+    return result[0]+'!'+result[1]+'!'+ngolat+'!'+ngolon+'!'+address_user+'!'+str(distance)#render_template('status.html',geocode_ngo=geocode_ngo,geocode_user=geocode_user)
 
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
-    if 'username' in session:
-        lat,lon,lat2,lon2=database.getlatlongofuserandngo(session['username'])
-        events={}
-        events['lat1']=lat
-        events['lon1']=lon
-        events['lat2']=lat2
-        events['lon2']=lon2
-        geocode_user=events['lat1'],events['lon1']
-        geocode_ngo=events['lat2'],events['lon2']
-        username_session = escape(session['username']).capitalize()
-        return render_template('loginpage.html', session_user_name=username_session,geocode_ngo=geocode_ngo,geocode_user=geocode_user   )
+    print(session['email'])
+    if 'email' in session:
+        lat,lon,lat2,lon2=database.getlatlongofuserandngo(session['email'])
+        print('----------')
+        if lat==None:
+            address_user="You're free currently"
+            distance="0.0"
+            geocode_user=0.0,0.0
+            geocode_ngo=0.0,0.0
+            username_session = escape(session['username']).capitalize()
+            return render_template('loginpage.html', session_user_name=username_session,geocode_ngo=geocode_ngo,geocode_user=geocode_user,dist=distance,address_user=address_user  )
+        else:
+            distance=database.haversine(lon2,lat2,lon,lat)        
+            events={}
+            events['lat1']=lat
+            events['lon1']=lon
+            events['lat2']=lat2
+            events['lon2']=lon2
+            geocode_user=events['lat1'],events['lon1']
+            geocode_ngo=events['lat2'],events['lon2']
+            address_user=geocoding.reversegeocode(lat,lon)
+            username_session = escape(session['username']).capitalize()
+            return render_template('loginpage.html', session_user_name=username_session,geocode_ngo=geocode_ngo,geocode_user=geocode_user,dist=distance,address_user=address_user  )
 
     return redirect(url_for('index'))
     #return render_template('loginpage.html')
@@ -101,8 +125,8 @@ def Authenticate():
 @app.route('/Login', methods=['GET', 'POST'])
 def login():
     error = None
-    if 'username' in session:
-        return redirect(url_for('profile'))
+    # if 'username' in session:
+    #     return redirect(url_for('profile'))
     if request.method == 'POST':
         username_form  = request.form['login-email']
         password_form  = request.form['login-pass']
@@ -115,10 +139,11 @@ def login():
             print('got value')
             cursor.execute("SELECT pass,name FROM ngo WHERE email = %s;", [username_form]) # FETCH THE HASHED PASSWORD
             for row in cursor.fetchall():
-                print(row)
+                #print('checking session:'+row)
                 if password_form == row[0]:
                     #print(password_form,row[0])
                     session['username'] = row[1]
+                    session['email']=username_form
                     #print(username)
                     return redirect(url_for('profile'))
                 else:
@@ -167,7 +192,7 @@ def signUp():
         else:
             return "Enter the required Fields"
             #return json.dumps({'html':'<span>Enter the required fields</span>'})
-
+        database.checkusertable()
     except Exception as e:
         print (str(e))
         return "Please Enter the fields correctly"

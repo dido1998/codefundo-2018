@@ -35,9 +35,10 @@ def analysetweet(tweet):
 	print(pred)
 	print('-------------------')
 	if pred=='DetectFlood':
+		if tweet['coordinates']!=None and tweet['coordinates']['coordinates']!=None:	
+			db.insertuser(tweet['coordinates']['coordinates'][1],tweet['coordinates']['coordinates'][0])
+			tweetextract.gettweetbylocation(tweet)
 
-		db.insertuser(tweet)
-		tweetextract.gettweetbylocation(tweet)
 
 if __name__=='__main__':
 	check()
