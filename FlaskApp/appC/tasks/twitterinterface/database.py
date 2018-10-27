@@ -76,7 +76,7 @@ def deleteentryngo(idstr):
 
 def getlatlongofuserandngo(username):
 	global cursor	
-
+	print('checklogin:'+username)
 	cursor.execute('select * from ngo where email=%s',username)
 	data=cursor.fetchall()
 	print(data)
