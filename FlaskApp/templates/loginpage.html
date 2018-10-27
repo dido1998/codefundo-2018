@@ -180,7 +180,7 @@
           }
 
           function calcRoute() {
-            var start = new google.maps.LatLng(Number(location_ngo_lat), Number(location_ngo_lat));
+            var start = new google.maps.LatLng(Number(location_ngo_lat), Number(location_ngo_lon));
             var end = new google.maps.LatLng(Number(location_user_lat), Number(location_user_lon));
             var request = {
               origin: start,
