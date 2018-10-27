@@ -169,7 +169,7 @@
           }
 
           function calcRoute() {
-            var start = new google.maps.LatLng(Number(12.9141), Number(74.8560));
+            var start = new google.maps.LatLng(Number(location_ngo_lat), Number(location_ngo_lon));
             var end = new google.maps.LatLng(Number(location_user_lat), Number(location_user_lon));
             //alert(location_ngo_lon)
             var request = {
@@ -532,7 +532,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                 location_ngo_lon=Number(arr[3])
                 ngo_address=arr[4]
                 ngo_dist=arr[5]
-                document.getElementById("location_ngo").value = "ngo_address";
+                document.getElementById("location_ngo").value = ngo_address;
                 document.getElementById("distance").innerHTML = ngo_dist;
                 //alert(location_ngo_lon)
                 mapLocation();
@@ -556,6 +556,9 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
               $.ajax('http://ip-api.com/json')
               .then(
                   function success(response) {
+                      user_lat = response.lat;
+                      user_long = response.lon;
+                      finalco = String(user_lat) + ',' + String(user_long);
                       console.log('User\'s Location Data is ', response);
                       console.log('User\'s Country', response.country);
                       getAdress(response.lat, response.lon)
