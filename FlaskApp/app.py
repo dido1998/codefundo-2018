@@ -66,7 +66,7 @@ def worker():
     data = request.form['keyword']
     print(data)
     result = data.split(',')
-    #print(result)
+    print(result)
     if int(result[2])==1:
         print("reached")
         database.insertuser(result[0],result[1])
