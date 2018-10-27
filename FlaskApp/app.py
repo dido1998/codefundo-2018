@@ -178,6 +178,7 @@ def signUp():
             conn = mysql.connect()
             cursor = conn.cursor()
             cursor.execute("INSERT INTO ngo (email,name,pass,lat,lon) VALUES(%s,%s,%s,%s,%s)",(_email,_name,_password,str(lat),str(lon)))
+            database.init(app)
             print('coolllllll')
             data = cursor.fetchall()
             print ('str(data[0])')
