@@ -1,14 +1,14 @@
 import urllib.request
 import json
 def geocode(address):
-	response=urllib.request.urlopen('https://maps.googleapis.com/maps/api/geocode/json?address='+address+'&key=AIzaSyA2Fn0J57CMn5od7EHQQWlOoEAGxKK8kqo')
+	response=urllib.request.urlopen('https://maps.googleapis.com/maps/api/geocode/json?address='+address+'&key=AIzaSyC-WytuJY84cvqRxPC7JSJ2BuDUL6rWbpk')
 	html=response.read()
 	html=html.decode("utf-8") 
 	res=json.loads(html)
 	return res['results'][0]['geometry']['location']['lat'],res['results'][0]['geometry']['location']['lng']
 
 def reversegeocode(lat,lon):
-	response=urllib.request.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng='+str(lat)+','+str(lon)+'&key=AIzaSyA2Fn0J57CMn5od7EHQQWlOoEAGxKK8kqo')
+	response=urllib.request.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng='+str(lat)+','+str(lon)+'&key=AIzaSyC-WytuJY84cvqRxPC7JSJ2BuDUL6rWbpk')
 	html=response.read()
 	html=html.decode("utf-8") 
 	res=json.loads(html)
