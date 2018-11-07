@@ -63,6 +63,7 @@ def showSignUp():
 
 @app.route('/receiver', methods = ['POST'])
 def worker():
+    database.init(app)
     data = request.form['keyword']
     print(data)
     result = data.split(',')
