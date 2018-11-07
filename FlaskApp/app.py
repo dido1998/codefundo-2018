@@ -86,6 +86,7 @@ def worker():
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
     print(session['email'])
+    database.init(app)
     if 'email' in session:
         lat,lon,lat2,lon2=database.getlatlongofuserandngo(session['email'])
         print('----------')
